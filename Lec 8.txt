@@ -1,0 +1,317 @@
+//operation--
+$unwind 
+$size
+$addfields
+$push
+$addtoset
+$bucket 
+
+
+
+
+break the skills of each data  set ?
+[
+  {$unwind:"$skills"}
+]
+
+ 
+
+find users count of each skill?
+[
+  {$unwind:"$skills"},
+  {
+    $group: {
+      _id: "$skills",
+      countofusers:{$sum:1}      }
+  }
+] 
+
+
+
+
+find users count of each skill and their avg max and min salary?
+[
+  {$unwind:"$skills"},
+  {
+    $group: {
+      _id: "$skills",
+      countofusers:{$sum:1},
+      maxsal:{$max:"$salary"},
+      avgsal:{$avg:"$salary"},
+      minsal:{$min:"$salary"}
+    }
+  }
+]
+
+
+
+
+find the avg no of skill of per users in each city ?
+[
+  {$unwind:"$skills"},
+  {
+    $group: {
+      _id:{skills:"$skills",city:"$city"},
+      skillcount:{$sum:1},
+      avgsal:{$avg:"$salary"},
+      maxsal:{$max:"$salary"},
+			minsal:{$min:"$salary"}
+    }
+  }
+]
+
+
+
+find the avg no of skill for male and female category in each city ?[
+  {
+    $group: {
+      _id: {
+        city: "$city",
+        gender: "$gender"
+      },
+      avgSkills: {
+        $avg: {
+          $size: "$skills"
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      city: "$_id.city",
+      gender: "$_id.gender",
+      avgSkills: 1
+    }
+  }
+]
+
+
+				////or////
+
+[
+  {$addFields: {
+    numberofskills:{$size:"$skills"}}
+  },
+   {
+     $group: {
+       _id:{city:"$city",gender:"$gender"},
+       avgskill:{$avg:"$numberofskills"}
+       }
+ }
+]
+
+
+
+
+find all the users who have same last name ?
+//push command working 
+//*very important for mern stack application
+
+
+[
+{
+    $group: {
+      _id:"$lastName",
+      usercount:{$sum:1},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+group all the users by city and find the username those r satisfying that city ?
+[
+{
+    $group: {
+      _id:"$city",
+      usercount:{$sum:1},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+group users by role and collect all unique skills for reach role ?
+[{$unwind:"$skills"},
+{ $group: {
+      _id:"$role",
+  		skills:{$addToSet:"$skills"},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+group the users by gender and collect the salaries for each gender and also show the users ?
+/////creating array 
+
+[
+{ $group: {
+      _id:"$gender",
+  		salaries:{$push:"$salary"},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+			////or///
+[
+{ $group: {
+      _id:"$gender",
+  		salaries:{$push:"$salary"},
+  		username:{$push:"$username"},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+
+///creating object for array 
+
+[
+{ $group: {
+      _id:"$gender",
+  users:
+    {
+      $push:{
+        name:"$username",
+        salary:"$salary"
+      }
+    }
+  }
+  }
+]
+
+
+
+group users by gender and collect there object id's?
+[
+{ $group: {
+      _id:"$gender",
+  		Objectid:{$push:"$_id"},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+group users by skill and return all the users of particular skill?
+
+[{$unwind:"$skills"},
+{ $group: {
+      _id:"$skills",
+  		role:{$push:"$role"},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+group users on basis of city and collect all unique roles?
+[{$unwind:"$role"},
+{ $group: {
+      _id:"$city",
+  		role:{$push:"$role"},
+      users:{$push:"$$ROOT"}}
+  }
+]
+
+
+
+group the users on the basis of city and push only name salary and age ?
+
+[
+{ $group: {
+      _id:"$city",
+  		users:{
+        $push:{
+          name:"$username",
+  		age:"$age",
+  		salary:"$salary"
+  }}}}
+]
+
+
+
+
+---------------------------------------------------------------------------
+//bucket (used to write condition)
+//grouping by using while in mongodb 
+//switch and if-else statement using mongodb 
+
+
+bucket users by salary ranges and calculate the total no of users in each range ?
+[
+  {
+    $bucket: {
+      groupBy: "$salary",
+      boundaries: [0,500000,800000, 1000000 ],
+      default: "other",
+      output: {count:{$sum:1},
+      username:{$push:
+        {
+          name:"$username",
+        	salary:"$salary"}}
+        }}}
+]
+
+
+
+-------------------------------------------------------------------------------------
+					/////RECAP/////
+MOONGDB
+-JSON FILE
+-A DATABASE NEEDS AT LEAST 1 COLLECTION NEEDED
+-COLLECTION IS LIKE A SUB FOLDER
+-DOCUMENT HAS KEY AND VALUE ------NUMBERS STRINGS ARRAYS OBJECTS
+
+DEPLOYMENT
+TO MAINTAIN DATA CONSISTENCY----CHANGES SHOULD BE REFLECTED EVERYWHERE
+
+MULTIDBs---CLUSTTERS
+
+M0 M2 M10-----AMAZON MACHINES
+PAY AS YOU GO MODEL
+
+3 METHODS TO UPLOAD DATA
+COMAPSS
+VSCODE
+SHELL
+
+
+DML COMMANDS
+-QUERRY COMMANDS
+>FIND
+>AGGREGATION PIPELINES
+MODEL OF VERTICAL SCALING
+
+
+HORIZONTAL SCALING-------SHARDING
+
+
+
+######### CAP(CONSISTENCY AVAILABILITY PARTITION) THEORM ########
+
+DIFFERENCE BETWEEN WHATSAPP---(AVAILABILITY MATTERS) AND BANK WEBSITE====()CONSISTENCY MATTERS
+
+PARTITION---DISTRBUTION SYSTEM
+
+HAVE TO CHOOSE 2 BETWEEN THE 3
+TRIANGLE THEORM
+
+#### REPLICA SET
+TO IMPROVE DATA SECURITY AND PROTECTION
+
+
+
+
+CDN---CONTENT DELIVERY NETWORK
+
+
+API
+
+
+
+

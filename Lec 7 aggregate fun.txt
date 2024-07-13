@@ -1,0 +1,463 @@
+aggregation pipeline (commands)--
+
+//cluster- more than 1 database / collection of database 
+
+//sharding- scaling->
+			1.vertical scaling 
+			2.horizontal scaling 
+
+CAP theorem - consistency , availability, partition 
+
+data where gender is female and city is Jaipur and skills python?
+[{
+  $match: {
+    gender:"Female",
+    city:"Jaipur",
+    skills:"Python"
+  }
+}]
+
+
+
+data where salaray is 450000 and gender is female ?
+[{
+  $match: {
+    gender:"Female",
+    salary:450000
+  }
+}]
+
+
+data where city is delhi where salary is greater than 450000?
+[{
+  $match: {
+    city:"New Delhi",
+    salary:{$gt:450000}
+  }
+}]
+
+
+data where user is either from delhi Mumbai or Hyderabad?
+[{
+  $match: {
+    city:{$in:["New Delhi","Mumbai","Hyderabad"]}
+  }
+}]
+
+
+
+
+data where no of males and females in doc ?
+[
+  {
+  $group: {
+    _id: "$gender",
+    countofgender:{$sum:1}
+  }
+  },
+  {
+    $project: {
+    gender:"$_id",
+    countofgender:1
+  }
+ }
+]
+
+
+data where no of users in Hyderabad?
+[
+  {
+    $match: {
+      city:"Hyderabad"
+    }
+  },
+  {
+    $count: "total users in Hyderabad"
+  }
+]
+
+
+
+
+count no of females?
+[
+  {
+    $match: {
+      gender:"Female"
+    }
+  },
+  {
+    $count: "total Female users"
+  }
+]
+
+
+
+count no of female users from each city ?
+[
+  {
+    $match: {
+      gender:"Female"
+    }
+  },
+  {$group: {
+    _id:"$city",
+    noofcity:{$sum:1}
+  }}
+]
+
+
+
+count no of males and females living in Jaipur ?
+[
+  {
+    $match: {
+      city:"Jaipur"
+    }
+  },
+  {$group: {
+    _id:"$gender",
+    noofusers:{$sum:1}
+  }}
+]
+
+
+how many male users r from delhi who have skills java ?
+[
+  {$match: {
+    gender:"Male",
+    city:"New Delhi",
+    skills:"Java"
+  }
+  },
+   {$count: "no of male users"}
+]
+
+
+data count where users from goa gender female age greater than 24 having skill python and c++?
+ [
+  {$match: {
+    gender:"Female",
+    city:"Goa",
+    skills:{"$all":["Python","C++"]},
+    age:{"$gt":24}
+  }
+  },
+   {$count: "no of female users"}
+]
+
+
+
+----------------------------------------------------------------------------------------------------
+
+operations--
+
+$match->operator (just like find->function)
+$group 
+$count
+$project
+
+
+-----------------------------------------------------------------------------------------------------
+
+
+//average command 
+
+find users average salary ?
+[
+  {
+    $group: {
+      _id:"$role",
+      averagesal:{$avg:"$salary"}
+    }
+  }
+]
+
+
+
+
+find users average salary showing their minimum and maximum salary as well?
+[
+  {
+    $group: {
+      _id:"$role",
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+    },
+    {$project: {
+      role:"$_id",
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+    }
+  }
+]
+
+
+
+
+
+find all the doc where user role is customer having skill html but not css and find the max min and avg salary ?
+
+
+
+
+find average salary of every city including max and min salary ?
+[
+  {
+    $group: {
+      _id:"$city",
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+    },
+    {$project: {
+      city:"$_id",
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+    }
+  }
+]
+
+
+
+find max min and avg salary of a female and male ?(combined)
+[
+  {
+    $group: {
+      _id:"$gender",
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+    },
+    {$project: {
+      gender:"$_id",
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+    }
+  }
+]
+
+
+
+find max min and avg salary of a female ?(specifically)
+[
+  {$match: {
+    gender:"Female"}
+  },
+    {$group:{
+      _id:"Female",
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     gender:"$_id",
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+  }}
+]
+
+
+
+
+
+find max min and avg salary of males living in Hyderabad? 
+[
+  {$match: {
+    gender:"Male",
+  	city:"Hyderabad"}
+  },
+    {$group:{
+      _id:"Male",
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     gender:"$_id",
+      averagesal:1,
+      minsal:1,
+      maxsal:1,
+    	city:1
+  }}
+]
+						////or////
+
+[
+  {$match: {
+    gender:"Male",
+  	city:"Hyderabad"}
+  },
+    {$group:{
+      _id:null,
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     _id:0,
+      averagesal:1,
+      minsal:1,
+      maxsal:1,
+    	city:1
+  }}
+]
+
+
+
+
+find users who have skills python and java whose gender is male find their avg max and min salary ?
+[
+  {$match: {
+    gender:"Male",
+  	skills:{"$in":["Python","Java"]}}
+  },
+    {$group:{
+      _id:"Male",
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     gender:"$_id",
+      averagesal:1,
+      minsal:1,
+      maxsal:1,
+    	city:1
+  }}
+]
+
+					////or////
+[
+  {$match: {
+    gender:"Male",
+  	skills:{"$in":["Python","Java"]}}
+  },
+    {$group:{
+      _id:null,
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     _id:0,
+      averagesal:1,
+      minsal:1,
+      maxsal:1,
+    	city:1
+  }}
+]
+
+
+data where role customer having skill html but not css and their max min and avg salary ?
+[
+  {$match: {
+    role:"customer",
+  	skills:"HTML",
+    skills:{"$ne":"CSS"}}
+  },
+    {$group:{
+      _id:null,
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     _id:0,
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+  }}
+]
+
+
+
+find data where users role is customer email id should not contain "@gmail.com" find the count of such users ?
+[
+  {$match: {
+    role:"customer",
+  	useremail:{"$not":/@gmail.com/}}
+  },
+  {
+    $count:"no of such users"
+  }]
+
+
+retrieve all the doc where user is admin and have atlest 3 skills and its max min and avg salary?
+[
+  {$match: {
+     role:"admin",
+    "skills.2":{$exists:true}}
+  },
+    {$group:{
+      _id:null,
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     _id:0,
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+  }}
+]
+
+
+
+user with atmost 2 skill and his min max and avg salary?
+[
+  {$match: {
+    "skills.":{$exists:false}}
+  },
+    {$group:{
+      _id:null,
+      averagesal:{$avg:"$salary"},
+      minsal:{$min:"$salary"},
+      maxsal:{$max:"$salary"}
+    }
+  },
+  {$project: {
+     _id:0,
+      averagesal:1,
+      minsal:1,
+      maxsal:1
+  }}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,176 @@
+upload file in  a database 
+
+open mongodb atlas > browse collections > create database 
+
+//create database - database name = skit_interns 
+collection name = users (always in plural form)
+
+>insert document 
+methods
+-shell 
+-compass 
+-vs code 
+
+//method1 (mongodb compass) - GUI format 
+create connection 
+-paste compass link on mongodb compass 
+remove parenthesis and enter password 
+-make a folder mondodb 
+open vs make a file userdata.json and save it 
+
+//method2 (vs code) - developers format
+open vs code 
+install mongodb for vscode 
+go to atlas find link 
+paste it on mongodb connect 
+click on ur name / clusters {+} button 
+add database name and further details 
+blink / link the cluster ie close the tab and open it again 
+(document is single object of json file)
+(collection is array of documents)
+(database is array of collections)
+
+insert document in vscode 
+
+left click on users > insertOne> insertMany 
+remove curly braces 
+//single doc in curly brackets 
+//multiple doc in circular brackets 
+
+INSERT THE USERDATA.JSON FILE
+run and press yes 
+the file is inserted  
+(oid = object id --defined by monogodb itself)
+
+
+
+OMPONENT = The reusable part of the code like login and navbar etc.
+
+MVC architecture Model, view, controller
+
+ODM - Object database model
+ORDM - Object relation database model ==== by mongous
+
+[Middleware]----login logic between any path 
+protects routes the requires authentication
+
+SCHEMA DESIGN for array of documents
+
+#System Design
+
+
+
+
+
+//method 3 (mongodb shell) - terminal format 
+copy link 
+open cmt 
+paste and set password
+
+...below these r all ddl commands 
+
+Microsoft Windows [Version 10.0.22631.3737]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Advika Sharma>mongosh "mongodb+srv://advikasharma.fcw9mj1.mongodb.net/" --apiVersion 1 --username Advika
+Enter password: ****
+Current Mongosh Log ID: 668b8ccea6c8789a09cc8987
+Connecting to:          mAtlas atlas-2u0pr5-shard-0 [primary] sflix> show dbs
+sample_mflix  112.61 MiB
+sflix           8.00 KiB
+skit_interns   40.00 KiB
+admin         320.00 KiB
+local          26.69 GiBongodb+srv://<credentials>@advikasharma.fcw9mj1.mongodb.net/?appName=mongosh+2.2.10
+Using MongoDB:          7.0.11 (API Version 1)
+Using Mongosh:          2.2.10
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+Atlas atlas-2u0pr5-shard-0 [primary] test> show dbs
+sample_mflix  112.61 MiB
+skit_interns   40.00 KiB
+admin         320.00 KiB
+local          26.69 GiB
+Atlas atlas-2u0pr5-shard-0 [primary] test> use skit_interns
+switched to db skit_interns
+Atlas atlas-2u0pr5-shard-0 [primary] skit_interns> use sflix
+switched to db sflix
+Atlas atlas-2u0pr5-shard-0 [primary] sflix> show dbs
+sample_mflix  112.61 MiB
+skit_interns   40.00 KiB
+admin         320.00 KiB
+local          26.69 GiB
+Atlas atlas-2u0pr5-shard-0 [primary] sflix> db.createCollection('users')
+{ ok: 1 }
+Atlas atlas-2u0pr5-shard-0 [primary] sflix> show dbs
+sample_mflix  112.61 MiB
+sflix           8.00 KiB
+skit_interns   40.00 KiB
+admin         320.00 KiB
+local          26.69 GiB
+Atlas atlas-2u0pr5-shard-0 [primary] sflix> db.users.insertOne({id:1, productname:"apple",productdesc:"xyz",price:12.3})
+{
+  acknowledged: true,
+  insertedId: ObjectId('668b900da6c8789a09cc8989')
+}
+Atlas atlas-2u0pr5-shard-0 [primary] sflix> db.users.find()
+[
+  { _id: ObjectId('668b8fc9a6c8789a09cc8988'), id: 1 },
+  {
+    _id: ObjectId('668b900da6c8789a09cc8989'),
+    id: 1,
+    productname: 'apple',
+    productdesc: 'xyz',
+    price: 12.3
+  }
+]
+Atlas atlas-2u0pr5-shard-0 [primary] sflix> db.users.drop()
+true
+-------------------------------------------------------------------------
+
+
+
+SHELL
+
+copy link from atlas
+enter password
+ 
+////after this it will not remain a command prompt rather it will become a online remote system
+///CROSS PLATFORM COMPATIBILITY
+show dbs
+
+ 		DML Commands
+use apple
+use skit_intern
+use sflix
+
+db.createCollection('users')
+ now show dbs
+//sflix will be present
+
+
+Atlas atlas-w67s5p-shard-0 [primary] sfilx> db.users.insertOne({id:2,productname:"Apple",productdesc:"xyz",price:12.0})
+
+
+Atlas atlas-w67s5p-shard-0 [primary] sfilx> db.users.find()
+[
+  { _id: ObjectId('668b8fc649e3390c72cc8988'), id: 1 },
+  {
+    _id: ObjectId('668b902949e3390c72cc8989'),
+    id: 2,
+    productname: 'Apple',
+    productdesc: 'xyz',
+    price: 12
+  }
+]
+
+ db.users.drop()
+
+---------------------------------------------------------------------------------------------------------------
+
+
+assignment :
+1.you have to create a new database and add collection name as product
+2. using compass, using vscode, using shell
+
+
